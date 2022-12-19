@@ -9,3 +9,7 @@ Investigation of Smiths Altimeter
 * SER.No AA6481
 * SMITHS INDUSTRIES LIMITED
 * MADE IN CHELTENHAM, ENGLAND
+
+## Arduino encoder display
+
+[sketch](./Altimeter_decoder/Altimeter_decoder.ino)
