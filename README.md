@@ -10,6 +10,12 @@ Investigation of Smiths Altimeter
 * SMITHS INDUSTRIES LIMITED
 * MADE IN CHELTENHAM, ENGLAND
 
+![dismantle](./images/altimeter_dismantle)
+
+![internals](./images/altimeter_internals)
+
 ## Arduino encoder display
+
+![altimeter board](./images/altimeter_board.jpg)
 
 [sketch](./Altimeter_decoder/Altimeter_decoder.ino)

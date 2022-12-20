@@ -5,6 +5,7 @@
  * 
  */
 
+
 #include <max7219.h>
 #define LEFT 0
 #define RIGHT 1
@@ -14,6 +15,9 @@ MAX7219 max7219;
            // s0 s1 s2 s3: select pins
 CD74HC4067 mux(4, 5, 6, 7);  // create a new CD74HC4067 object with its four select lines
 const int signal_pin = 8; // Pin Connected to Sig pin of CD74HC4067
+
+#define SWITCH3 3
+#define SWITCH2 2
 
 #define int32 long
 #define int16 int
@@ -90,6 +94,8 @@ void setup() {
   max7219.Clear();
   max7219.DisplayText("Boro alt", LEFT);
   pinMode(signal_pin, INPUT_PULLUP); // Set as input for reading through signal pin
+  pinMode(SWITCH3, INPUT_PULLUP); // 
+  pinMode(SWITCH2, INPUT_PULLUP); // 
   delay(1000);
 }
 
@@ -98,6 +104,9 @@ void loop() {
  long altitude;
  long gillham;
 
+ bool switch3 = !digitalRead(SWITCH3);
+ bool switch2 = !digitalRead(SWITCH2);
+ 
 // gillham=GILLHAM_VALUE;
  gillham=read_mpx();
  Serial.print("0b");
@@ -107,15 +116,25 @@ void loop() {
  Serial.print(altitude);
  Serial.println("ft");
 
-  for (int i = 7; i >= 0; i--) {
-    dispbuf[i] =  (gillham&(1<<i)?'1':'0');   // Read bit into result value
+sprintf(dispbuf,"Alt%5d",altitude); // normal altitude display
+
+if(switch3) // 8 bit binary display
+{
+  for (int i = 0; i <= 7; i++) {
+    dispbuf[7-i] =  (gillham&(1<<i)?'1':'0');   // Read bit into result value
   }
   dispbuf[8]='\0';
   Serial.println(dispbuf);
-
-#ifndef DEBUG
-  sprintf(dispbuf,"Alt%5d",altitude);
-#endif
+}
+if(switch2)  // 4 digit octal split (12 bits)
+{ 
+  int nib_a,nib_b,nib_c,nib_d;
+  nib_a = gillham & 7;
+  nib_b = (gillham>>3) & 7;
+  nib_c = (gillham>>6) & 7;
+  nib_d = (gillham>>9) & 7;
+  sprintf(dispbuf,"%2d%2d%2d%2d",nib_d,nib_c,nib_b,nib_a);
+}
 
   //Display decimals right justified
   max7219.Clear();
